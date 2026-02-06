@@ -1,0 +1,36 @@
+# Dépendances
+node_modules/
+.npm
+
+# Fichiers de configuration locaux
+.env
+.env.local
+.env.*.local
+config.local.js
+
+# Logs
+*.log
+npm-debug.log*
+
+# Cache
+.cache/
+.temp/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build (si applicable)
+dist/
+build/
+
+# Fichiers temporaires
+*.tmp
+*.temp

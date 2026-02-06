@@ -1,0 +1,329 @@
+{
+  "name": "Diagnostic Bancabilité - Avance sur Marché",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "diagnostic-bancabilite",
+        "options": {
+          "responseData": "allEntries"
+        }
+      },
+      "id": "webhook-entry",
+      "name": "Webhook - Réception Diagnostic",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [250, 300],
+      "webhookId": "diagnostic-bancabilite-webhook"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "// Extraction et validation des données reçues\nconst items = $input.all();\nconst data = items[0].json;\n\n// Données du formulaire\nconst formData = data.formData || {};\nconst analyses = data.analyses || {};\nconst scoreGlobal = data.scoreGlobal || {};\n\n// Préparation du lead\nconst lead = {\n  // Informations de contact\n  email: formData.email || '',\n  telephone: formData.telephone || '',\n  \n  // Informations entreprise\n  raisonSociale: formData.raisonSociale || '',\n  rccm: formData.rccm || '',\n  secteurActivite: formData.secteurActivite || '',\n  dateCreation: formData.dateCreation || '',\n  dirigeantNom: formData.dirigeantNom || '',\n  \n  // Informations marché\n  objetMarche: formData.objetMarche || '',\n  montantHT: parseFloat(formData.montantHT) || 0,\n  montantDemande: parseFloat(formData.montantDemande) || 0,\n  typeMaitreOuvrage: formData.typeMaitreOuvrage || '',\n  \n  // Score et diagnostic\n  scoreTotal: scoreGlobal.scoreTotal || 0,\n  scoreMax: scoreGlobal.scoreMax || 100,\n  pourcentageScore: scoreGlobal.pourcentage || 0,\n  diagnostic: scoreGlobal.diagnostic?.label || 'Non évalué',\n  signalDiagnostic: scoreGlobal.diagnostic?.signal || 'INCONNU',\n  recommandation: scoreGlobal.diagnostic?.recommandation || '',\n  \n  // Métadonnées\n  dateSubmission: new Date().toISOString(),\n  source: 'Outil Web Diagnostic Bancabilité',\n  statut: 'Nouveau'\n};\n\n// Déterminer la priorité du lead\nlet priorite = 'Normale';\nif (scoreGlobal.pourcentage >= 70) {\n  priorite = 'Haute';\n} else if (scoreGlobal.pourcentage < 50) {\n  priorite = 'Basse';\n}\nlead.priorite = priorite;\n\n// Déterminer si c'est un lead qualifié\nlead.leadQualifie = scoreGlobal.pourcentage >= 50;\n\n// Préparer le résumé pour l'email\nconst resumeAnalyse = {\n  delai: analyses.delai ? {\n    taux: Math.round((analyses.delai.taux || 0) * 100) + '%',\n    categorie: analyses.delai.categorie || '',\n    risque: analyses.delai.risque || ''\n  } : null,\n  \n  capaciteTechnique: analyses.capaciteTechnique ? {\n    score: analyses.capaciteTechnique.scoreTotal + '/' + analyses.capaciteTechnique.maxScore,\n    diagnostic: analyses.capaciteTechnique.diagnostic?.label || ''\n  } : null,\n  \n  marge: analyses.marge ? {\n    montant: analyses.marge.marge,\n    taux: analyses.marge.tauxMarge?.toFixed(1) + '%',\n    diagnostic: analyses.marge.diagnostic?.message || ''\n  } : null,\n  \n  endettement: analyses.endettement ? {\n    signal: analyses.endettement.signal,\n    impayes: analyses.endettement.impayes > 0\n  } : null,\n  \n  garanties: analyses.garanties ? {\n    couverture: analyses.garanties.ratioCouvertureGlobal?.toFixed(1) + '%',\n    signal: analyses.garanties.signal\n  } : null\n};\n\nreturn [{\n  json: {\n    lead,\n    resumeAnalyse,\n    formData,\n    analyses,\n    scoreGlobal\n  }\n}];"
+      },
+      "id": "process-data",
+      "name": "Traitement des Données",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [470, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.lead.email }}",
+              "operation": "isNotEmpty"
+            }
+          ]
+        }
+      },
+      "id": "check-email",
+      "name": "Vérifier Email Valide",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [690, 300]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "contact",
+        "additionalFields": {
+          "email": "={{ $json.lead.email }}",
+          "firstName": "={{ $json.lead.dirigeantNom.split(' ')[0] }}",
+          "lastName": "={{ $json.lead.dirigeantNom.split(' ').slice(1).join(' ') }}",
+          "phone": "={{ $json.lead.telephone }}",
+          "company": "={{ $json.lead.raisonSociale }}"
+        }
+      },
+      "id": "crm-create-contact",
+      "name": "CRM - Créer Contact",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 1,
+      "position": [910, 200],
+      "credentials": {
+        "hubspotApi": {
+          "id": "YOUR_HUBSPOT_CREDENTIALS_ID",
+          "name": "HubSpot API"
+        }
+      },
+      "notes": "Remplacer par votre CRM (HubSpot, Pipedrive, Airtable, etc.)"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "resource": "deal",
+        "additionalFields": {
+          "dealName": "={{ 'Diagnostic - ' + $json.lead.raisonSociale }}",
+          "pipeline": "default",
+          "dealStage": "={{ $json.lead.signalDiagnostic === 'VERT' ? 'qualifiedtobuy' : ($json.lead.signalDiagnostic === 'ORANGE' ? 'presentationscheduled' : 'appointmentscheduled') }}",
+          "amount": "={{ $json.lead.montantDemande }}"
+        }
+      },
+      "id": "crm-create-deal",
+      "name": "CRM - Créer Opportunité",
+      "type": "n8n-nodes-base.hubspot",
+      "typeVersion": 1,
+      "position": [1130, 200],
+      "credentials": {
+        "hubspotApi": {
+          "id": "YOUR_HUBSPOT_CREDENTIALS_ID",
+          "name": "HubSpot API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "diagnostic@votredomaine.com",
+        "toEmail": "={{ $json.lead.email }}",
+        "subject": "Votre Diagnostic de Bancabilité - {{ $json.lead.diagnostic }}",
+        "emailType": "html",
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n  <meta charset=\"UTF-8\">\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; }\n    .header { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; padding: 30px; text-align: center; }\n    .header h1 { margin: 0; font-size: 24px; }\n    .content { padding: 30px; }\n    .score-badge { display: inline-block; padding: 20px 40px; border-radius: 50%; font-size: 28px; font-weight: bold; color: white; margin: 20px 0; }\n    .score-vert { background: linear-gradient(135deg, #10b981, #059669); }\n    .score-orange { background: linear-gradient(135deg, #f59e0b, #d97706); }\n    .score-rouge { background: linear-gradient(135deg, #ef4444, #dc2626); }\n    .result-box { background: #f8fafc; border-radius: 8px; padding: 20px; margin: 20px 0; }\n    .result-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #e2e8f0; }\n    .cta-button { display: inline-block; background: #2563eb; color: white; padding: 15px 30px; text-decoration: none; border-radius: 8px; font-weight: bold; margin: 20px 0; }\n    .footer { background: #1e293b; color: #94a3b8; padding: 20px; text-align: center; font-size: 12px; }\n  </style>\n</head>\n<body>\n  <div class=\"header\">\n    <h1>📊 Votre Diagnostic de Bancabilité</h1>\n    <p>Avance sur Marché</p>\n  </div>\n  \n  <div class=\"content\">\n    <p>Bonjour <strong>{{ $json.lead.dirigeantNom }}</strong>,</p>\n    \n    <p>Merci d'avoir utilisé notre outil de diagnostic de bancabilité. Voici le résumé de votre évaluation pour le marché <strong>{{ $json.lead.objetMarche }}</strong>.</p>\n    \n    <div style=\"text-align: center;\">\n      <div class=\"score-badge score-{{ $json.lead.signalDiagnostic.toLowerCase() }}\">\n        {{ Math.round($json.scoreGlobal.pourcentage) }}%\n      </div>\n      <h2 style=\"color: {{ $json.lead.signalDiagnostic === 'VERT' ? '#10b981' : ($json.lead.signalDiagnostic === 'ORANGE' ? '#f59e0b' : '#ef4444') }};\">{{ $json.lead.diagnostic }}</h2>\n    </div>\n    \n    <div class=\"result-box\">\n      <h3>📋 Résumé de l'analyse</h3>\n      \n      <div class=\"result-item\">\n        <span>Entreprise</span>\n        <strong>{{ $json.lead.raisonSociale }}</strong>\n      </div>\n      \n      <div class=\"result-item\">\n        <span>Montant du marché</span>\n        <strong>{{ $json.lead.montantHT.toLocaleString('fr-FR') }} FCFA</strong>\n      </div>\n      \n      <div class=\"result-item\">\n        <span>Financement demandé</span>\n        <strong>{{ $json.lead.montantDemande.toLocaleString('fr-FR') }} FCFA</strong>\n      </div>\n      \n      <div class=\"result-item\">\n        <span>Score global</span>\n        <strong>{{ $json.lead.scoreTotal }}/{{ $json.lead.scoreMax }} points</strong>\n      </div>\n    </div>\n    \n    <div class=\"result-box\">\n      <h3>💡 Notre recommandation</h3>\n      <p>{{ $json.lead.recommandation }}</p>\n    </div>\n    \n    <div style=\"text-align: center;\">\n      <p><strong>Vous souhaitez optimiser votre dossier ?</strong></p>\n      <a href=\"https://votresite.com/rendez-vous\" class=\"cta-button\">📅 Prendre rendez-vous avec un conseiller</a>\n    </div>\n    \n    <p>Notre équipe d'experts IOB est à votre disposition pour vous accompagner dans votre démarche de financement.</p>\n    \n    <p>Cordialement,<br><strong>L'équipe DiagBancabilité</strong></p>\n  </div>\n  \n  <div class=\"footer\">\n    <p>© 2026 DiagBancabilité - Cabinet IOB agréé BCEAO</p>\n    <p>Cet email a été envoyé suite à votre demande de diagnostic.</p>\n  </div>\n</body>\n</html>"
+      },
+      "id": "send-email-client",
+      "name": "Envoyer Email Client",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [910, 400],
+      "credentials": {
+        "smtp": {
+          "id": "YOUR_SMTP_CREDENTIALS_ID",
+          "name": "SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "diagnostic@votredomaine.com",
+        "toEmail": "commercial@votredomaine.com",
+        "subject": "[NOUVEAU LEAD] {{ $json.lead.diagnostic }} - {{ $json.lead.raisonSociale }} ({{ $json.lead.priorite }})",
+        "emailType": "html",
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n  <style>\n    body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }\n    .header { background: #1e293b; color: white; padding: 20px; }\n    .badge { display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: bold; font-size: 12px; }\n    .badge-vert { background: #d1fae5; color: #059669; }\n    .badge-orange { background: #fef3c7; color: #d97706; }\n    .badge-rouge { background: #fee2e2; color: #dc2626; }\n    .badge-haute { background: #dbeafe; color: #2563eb; }\n    .content { padding: 20px; }\n    table { width: 100%; border-collapse: collapse; }\n    th, td { padding: 10px; text-align: left; border-bottom: 1px solid #e2e8f0; }\n    th { background: #f8fafc; font-weight: 600; }\n    .section { margin: 20px 0; background: #f8fafc; padding: 15px; border-radius: 8px; }\n  </style>\n</head>\n<body>\n  <div class=\"header\">\n    <h2>🎯 Nouveau Lead - Diagnostic Bancabilité</h2>\n    <span class=\"badge badge-{{ $json.lead.signalDiagnostic.toLowerCase() }}\">{{ $json.lead.diagnostic }}</span>\n    <span class=\"badge badge-haute\">Priorité: {{ $json.lead.priorite }}</span>\n  </div>\n  \n  <div class=\"content\">\n    <div class=\"section\">\n      <h3>📞 Coordonnées</h3>\n      <table>\n        <tr><th>Email</th><td><a href=\"mailto:{{ $json.lead.email }}\">{{ $json.lead.email }}</a></td></tr>\n        <tr><th>Téléphone</th><td><a href=\"tel:{{ $json.lead.telephone }}\">{{ $json.lead.telephone }}</a></td></tr>\n        <tr><th>Dirigeant</th><td>{{ $json.lead.dirigeantNom }}</td></tr>\n      </table>\n    </div>\n    \n    <div class=\"section\">\n      <h3>🏢 Entreprise</h3>\n      <table>\n        <tr><th>Raison sociale</th><td>{{ $json.lead.raisonSociale }}</td></tr>\n        <tr><th>RCCM</th><td>{{ $json.lead.rccm }}</td></tr>\n        <tr><th>Secteur</th><td>{{ $json.lead.secteurActivite }}</td></tr>\n        <tr><th>Date création</th><td>{{ $json.lead.dateCreation }}</td></tr>\n      </table>\n    </div>\n    \n    <div class=\"section\">\n      <h3>📄 Marché</h3>\n      <table>\n        <tr><th>Objet</th><td>{{ $json.lead.objetMarche }}</td></tr>\n        <tr><th>Montant HT</th><td><strong>{{ $json.lead.montantHT.toLocaleString('fr-FR') }} FCFA</strong></td></tr>\n        <tr><th>Financement demandé</th><td><strong>{{ $json.lead.montantDemande.toLocaleString('fr-FR') }} FCFA</strong></td></tr>\n        <tr><th>Maître d'ouvrage</th><td>{{ $json.lead.typeMaitreOuvrage }}</td></tr>\n      </table>\n    </div>\n    \n    <div class=\"section\">\n      <h3>📊 Résultat du Diagnostic</h3>\n      <table>\n        <tr><th>Score</th><td><strong>{{ $json.lead.scoreTotal }}/{{ $json.lead.scoreMax }} ({{ Math.round($json.scoreGlobal.pourcentage) }}%)</strong></td></tr>\n        <tr><th>Verdict</th><td><span class=\"badge badge-{{ $json.lead.signalDiagnostic.toLowerCase() }}\">{{ $json.lead.diagnostic }}</span></td></tr>\n        <tr><th>Lead qualifié</th><td>{{ $json.lead.leadQualifie ? '✅ Oui' : '❌ Non' }}</td></tr>\n      </table>\n    </div>\n    \n    <div class=\"section\">\n      <h3>🔍 Points d'analyse</h3>\n      <ul>\n        {{ $json.resumeAnalyse.delai ? '<li>Délai: ' + $json.resumeAnalyse.delai.taux + ' consommé (' + $json.resumeAnalyse.delai.categorie + ')</li>' : '' }}\n        {{ $json.resumeAnalyse.capaciteTechnique ? '<li>Capacité technique: ' + $json.resumeAnalyse.capaciteTechnique.score + ' - ' + $json.resumeAnalyse.capaciteTechnique.diagnostic + '</li>' : '' }}\n        {{ $json.resumeAnalyse.marge ? '<li>Marge: ' + $json.resumeAnalyse.marge.taux + ' - ' + $json.resumeAnalyse.marge.diagnostic + '</li>' : '' }}\n        {{ $json.resumeAnalyse.endettement ? '<li>Endettement: ' + $json.resumeAnalyse.endettement.signal + ($json.resumeAnalyse.endettement.impayes ? ' ⚠️ IMPAYÉS' : '') + '</li>' : '' }}\n        {{ $json.resumeAnalyse.garanties ? '<li>Garanties: ' + $json.resumeAnalyse.garanties.couverture + ' couverture (' + $json.resumeAnalyse.garanties.signal + ')</li>' : '' }}\n      </ul>\n    </div>\n    \n    <p><strong>Action recommandée:</strong> {{ $json.lead.recommandation }}</p>\n    \n    <p style=\"color: #64748b; font-size: 12px;\">Lead reçu le {{ new Date($json.lead.dateSubmission).toLocaleString('fr-FR') }}</p>\n  </div>\n</body>\n</html>"
+      },
+      "id": "send-email-equipe",
+      "name": "Notifier Équipe Commerciale",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [1130, 400],
+      "credentials": {
+        "smtp": {
+          "id": "YOUR_SMTP_CREDENTIALS_ID",
+          "name": "SMTP"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "sheet",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "url",
+          "value": "YOUR_GOOGLE_SHEET_URL"
+        },
+        "sheetName": {
+          "__rl": true,
+          "mode": "list",
+          "value": "Leads"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Date": "={{ $json.lead.dateSubmission }}",
+            "Email": "={{ $json.lead.email }}",
+            "Téléphone": "={{ $json.lead.telephone }}",
+            "Entreprise": "={{ $json.lead.raisonSociale }}",
+            "Dirigeant": "={{ $json.lead.dirigeantNom }}",
+            "Secteur": "={{ $json.lead.secteurActivite }}",
+            "Montant Marché": "={{ $json.lead.montantHT }}",
+            "Montant Demandé": "={{ $json.lead.montantDemande }}",
+            "Score": "={{ $json.lead.scoreTotal + '/' + $json.lead.scoreMax }}",
+            "Pourcentage": "={{ Math.round($json.scoreGlobal.pourcentage) + '%' }}",
+            "Diagnostic": "={{ $json.lead.diagnostic }}",
+            "Priorité": "={{ $json.lead.priorite }}",
+            "Lead Qualifié": "={{ $json.lead.leadQualifie ? 'Oui' : 'Non' }}",
+            "Statut": "={{ $json.lead.statut }}"
+          }
+        }
+      },
+      "id": "google-sheets-backup",
+      "name": "Backup Google Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [1350, 300],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "YOUR_GOOGLE_CREDENTIALS_ID",
+          "name": "Google Sheets"
+        }
+      },
+      "notes": "Sauvegarde de tous les leads dans un Google Sheet"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: true, message: 'Diagnostic enregistré avec succès', leadId: $json.lead.email, diagnostic: $json.lead.diagnostic }) }}"
+      },
+      "id": "respond-success",
+      "name": "Réponse Succès",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [1570, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ success: false, message: 'Email manquant ou invalide' }) }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "respond-error",
+      "name": "Réponse Erreur",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [910, 500]
+    }
+  ],
+  "connections": {
+    "Webhook - Réception Diagnostic": {
+      "main": [
+        [
+          {
+            "node": "Traitement des Données",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Traitement des Données": {
+      "main": [
+        [
+          {
+            "node": "Vérifier Email Valide",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Vérifier Email Valide": {
+      "main": [
+        [
+          {
+            "node": "CRM - Créer Contact",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Envoyer Email Client",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Réponse Erreur",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CRM - Créer Contact": {
+      "main": [
+        [
+          {
+            "node": "CRM - Créer Opportunité",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "CRM - Créer Opportunité": {
+      "main": [
+        [
+          {
+            "node": "Backup Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Envoyer Email Client": {
+      "main": [
+        [
+          {
+            "node": "Notifier Équipe Commerciale",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notifier Équipe Commerciale": {
+      "main": [
+        [
+          {
+            "node": "Backup Google Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Backup Google Sheets": {
+      "main": [
+        [
+          {
+            "node": "Réponse Succès",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [
+    {
+      "name": "Diagnostic Bancabilité",
+      "createdAt": "2026-02-06T00:00:00.000Z",
+      "updatedAt": "2026-02-06T00:00:00.000Z"
+    },
+    {
+      "name": "Lead Generation",
+      "createdAt": "2026-02-06T00:00:00.000Z",
+      "updatedAt": "2026-02-06T00:00:00.000Z"
+    }
+  ],
+  "triggerCount": 1,
+  "updatedAt": "2026-02-06T00:00:00.000Z",
+  "versionId": "1"
+}

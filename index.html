@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnostic de Bancabilité - Avance sur Marché</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>DiagBancabilité</span>
+            </div>
+            <nav class="nav-menu">
+                <a href="#features">Fonctionnalités</a>
+                <a href="#how-it-works">Comment ça marche</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="badge">
+                    <i class="fas fa-shield-alt"></i>
+                    Outil certifié IOB-BCEAO
+                </div>
+                <h1>Évaluez votre <span class="highlight">Bancabilité</span> en quelques minutes</h1>
+                <p class="hero-description">
+                    Découvrez si votre demande d'avance sur marché a des chances d'être acceptée par les banques. 
+                    Obtenez un diagnostic complet et personnalisé gratuitement.
+                </p>
+                <div class="hero-cta">
+                    <button class="btn btn-primary btn-lg" onclick="scrollToForm()">
+                        <i class="fas fa-rocket"></i>
+                        Commencer le diagnostic
+                    </button>
+                    <div class="hero-stats">
+                        <div class="stat">
+                            <span class="stat-number">500+</span>
+                            <span class="stat-label">Entreprises évaluées</span>
+                        </div>
+                        <div class="stat">
+                            <span class="stat-number">40 Mds</span>
+                            <span class="stat-label">FCFA financés</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="dashboard-preview">
+                    <div class="preview-header">
+                        <div class="dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+                    <div class="preview-content">
+                        <div class="score-circle">
+                            <svg viewBox="0 0 100 100">
+                                <circle cx="50" cy="50" r="45" class="bg"/>
+                                <circle cx="50" cy="50" r="45" class="progress" style="stroke-dashoffset: 70;"/>
+                            </svg>
+                            <div class="score-value">75%</div>
+                        </div>
+                        <div class="preview-bars">
+                            <div class="bar" style="width: 85%;"></div>
+                            <div class="bar" style="width: 70%;"></div>
+                            <div class="bar" style="width: 90%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Une analyse complète en <span class="highlight">6 dimensions</span></h2>
+                <p>Notre algorithme analyse votre dossier selon les critères exacts utilisés par les banques</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon blue">
+                        <i class="fas fa-file-contract"></i>
+                    </div>
+                    <h3>Analyse du Marché</h3>
+                    <p>Vérification du contrat, délai de consommation, modalités de paiement et qualité du donneur d'ordre.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon green">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3>Capacité Technique</h3>
+                    <p>Évaluation de vos références, ratio de capacité et indice de puissance structurelle.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon orange">
+                        <i class="fas fa-calculator"></i>
+                    </div>
+                    <h3>Structure Financière</h3>
+                    <p>Analyse de la marge bénéficiaire et cohérence du plan de financement.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon purple">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h3>Situation Comptable</h3>
+                    <p>Ratios financiers clés : CAF, BFR, trésorerie nette, autonomie financière.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon red">
+                        <i class="fas fa-university"></i>
+                    </div>
+                    <h3>Endettement Bancaire</h3>
+                    <p>Analyse des engagements existants et détection des impayés.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon teal">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Garanties</h3>
+                    <p>Évaluation de la couverture hypothécaire et garanties institutionnelles.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How it works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <div class="section-header">
+                <h2>Comment ça <span class="highlight">fonctionne</span> ?</h2>
+                <p>Un processus simple en 4 étapes pour obtenir votre diagnostic</p>
+            </div>
+            <div class="steps">
+                <div class="step">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Renseignez vos informations</h3>
+                        <p>Complétez le formulaire avec les données de votre marché et de votre entreprise.</p>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Analyse automatique</h3>
+                        <p>Notre algorithme calcule instantanément vos ratios et scores sur 6 dimensions.</p>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Recevez votre diagnostic</h3>
+                        <p>Obtenez un verdict clair : Feu Vert, Orange ou Rouge avec des recommandations.</p>
+                    </div>
+                </div>
+                <div class="step-connector"></div>
+                <div class="step">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Accompagnement personnalisé</h3>
+                        <p>Un conseiller vous contacte pour optimiser votre dossier si nécessaire.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Form Section -->
+    <section class="form-section" id="diagnostic-form">
+        <div class="container">
+            <div class="form-wrapper">
+                <div class="form-header">
+                    <h2><i class="fas fa-clipboard-check"></i> Diagnostic de Bancabilité</h2>
+                    <p>Remplissez ce formulaire pour évaluer vos chances d'obtenir une avance sur marché</p>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress-container">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-steps">
+                        <div class="progress-step active" data-step="1">
+                            <span class="step-icon"><i class="fas fa-building"></i></span>
+                            <span class="step-label">Entreprise</span>
+                        </div>
+                        <div class="progress-step" data-step="2">
+                            <span class="step-icon"><i class="fas fa-file-contract"></i></span>
+                            <span class="step-label">Marché</span>
+                        </div>
+                        <div class="progress-step" data-step="3">
+                            <span class="step-icon"><i class="fas fa-trophy"></i></span>
+                            <span class="step-label">Références</span>
+                        </div>
+                        <div class="progress-step" data-step="4">
+                            <span class="step-icon"><i class="fas fa-coins"></i></span>
+                            <span class="step-label">Financement</span>
+                        </div>
+                        <div class="progress-step" data-step="5">
+                            <span class="step-icon"><i class="fas fa-chart-pie"></i></span>
+                            <span class="step-label">Finances</span>
+                        </div>
+                        <div class="progress-step" data-step="6">
+                            <span class="step-icon"><i class="fas fa-landmark"></i></span>
+                            <span class="step-label">Banques</span>
+                        </div>
+                        <div class="progress-step" data-step="7">
+                            <span class="step-icon"><i class="fas fa-shield-alt"></i></span>
+                            <span class="step-label">Garanties</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="diagnosticForm" class="diagnostic-form">
+                    <!-- Step 1: Entreprise -->
+                    <div class="form-step active" id="step1">
+                        <div class="step-header">
+                            <h3><i class="fas fa-building"></i> Informations sur l'Entreprise</h3>
+                            <p>Présentez votre entreprise et son activité</p>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="raisonSociale">Raison sociale <span class="required">*</span></label>
+                                <input type="text" id="raisonSociale" name="raisonSociale" required placeholder="Nom de votre entreprise">
+                            </div>
+                            <div class="form-group">
+                                <label for="rccm">Numéro RCCM <span class="required">*</span></label>
+                                <input type="text" id="rccm" name="rccm" required placeholder="Ex: RB/COT/21 A 12345">
+                            </div>
+                            <div class="form-group">
+                                <label for="secteurActivite">Secteur d'activité <span class="required">*</span></label>
+                                <select id="secteurActivite" name="secteurActivite" required>
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="btp">BTP / Construction</option>
+                                    <option value="fournitures">Fournitures de biens</option>
+                                    <option value="services">Services / Prestations intellectuelles</option>
+                                    <option value="transport">Transport / Logistique</option>
+                                    <option value="informatique">Informatique / Télécoms</option>
+                                    <option value="energie">Énergie / Environnement</option>
+                                    <option value="sante">Santé / Pharmaceutique</option>
+                                    <option value="autre">Autre</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="dateCreation">Date de création <span class="required">*</span></label>
+                                <input type="date" id="dateCreation" name="dateCreation" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="dirigeantNom">Nom du dirigeant <span class="required">*</span></label>
+                                <input type="text" id="dirigeantNom" name="dirigeantNom" required placeholder="Prénom et Nom">
+                            </div>
+                            <div class="form-group">
+                                <label for="experienceDirigeant">Années d'expérience du dirigeant</label>
+                                <input type="number" id="experienceDirigeant" name="experienceDirigeant" min="0" placeholder="En années">
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-primary" onclick="nextStep(1)">
+                                Continuer <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Marché -->
+                    <div class="form-step" id="step2">
+                        <div class="step-header">
+                            <h3><i class="fas fa-file-contract"></i> Informations sur le Marché</h3>
+                            <p>Détaillez le contrat de marché pour lequel vous demandez l'avance</p>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label for="objetMarche">Objet du marché <span class="required">*</span></label>
+                                <textarea id="objetMarche" name="objetMarche" required rows="3" placeholder="Décrivez brièvement l'objet du marché..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="montantHT">Montant HT du marché (FCFA) <span class="required">*</span></label>
+                                <input type="number" id="montantHT" name="montantHT" required min="0" placeholder="Ex: 50000000">
+                            </div>
+                            <div class="form-group">
+                                <label for="montantTTC">Montant TTC du marché (FCFA)</label>
+                                <input type="number" id="montantTTC" name="montantTTC" min="0" placeholder="Ex: 59000000">
+                            </div>
+                            <div class="form-group">
+                                <label for="dateSignatureOS">Date de signature Ordre de Service <span class="required">*</span></label>
+                                <input type="date" id="dateSignatureOS" name="dateSignatureOS" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="dateFinPrevue">Date de fin prévue <span class="required">*</span></label>
+                                <input type="date" id="dateFinPrevue" name="dateFinPrevue" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="typeMaitreOuvrage">Type de maître d'ouvrage <span class="required">*</span></label>
+                                <select id="typeMaitreOuvrage" name="typeMaitreOuvrage" required>
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="etat">État / Administration centrale</option>
+                                    <option value="collectivite">Collectivité locale</option>
+                                    <option value="entreprise_publique">Entreprise publique</option>
+                                    <option value="prive_grand_groupe">Privé - Grand groupe / Multinationale</option>
+                                    <option value="prive_pme">Privé - PME</option>
+                                    <option value="ong">ONG / Organisation internationale</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="sourceFinancement">Source de financement du marché</label>
+                                <select id="sourceFinancement" name="sourceFinancement">
+                                    <option value="">Sélectionnez...</option>
+                                    <option value="budget_autonome">Budget autonome</option>
+                                    <option value="financement_exterieur">Financement extérieur (bailleur)</option>
+                                    <option value="mixte">Mixte</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="form-section-divider">
+                            <span>Clauses contractuelles</span>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>Avance de démarrage prévue au contrat ?</label>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="avanceDemarrage" value="oui" onchange="toggleAvanceDetails(true)">
+                                        <span>Oui</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="avanceDemarrage" value="non" checked onchange="toggleAvanceDetails(false)">
+                                        <span>Non</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group" id="avanceDetailsGroup" style="display: none;">
+                                <label for="tauxAvanceDemarrage">Taux de l'avance de démarrage (%)</label>
+                                <input type="number" id="tauxAvanceDemarrage" name="tauxAvanceDemarrage" min="0" max="100" placeholder="Ex: 30">
+                            </div>
+                            <div class="form-group">
+                                <label>Comptez-vous recevoir cette avance ?</label>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="recevoirAvance" value="oui">
+                                        <span>Oui</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="recevoirAvance" value="non" checked>
+                                        <span>Non</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Retenue de garantie (5%) prévue ?</label>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="retenueGarantie" value="oui">
+                                        <span>Oui</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="retenueGarantie" value="non" checked>
+                                        <span>Non</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="tauxPenalites">Taux des pénalités de retard (‰ par jour)</label>
+                                <input type="number" id="tauxPenalites" name="tauxPenalites" min="0" step="0.1" placeholder="Ex: 1">
+                                <small class="form-hint">Taux normal : 1/1000ème par jour</small>
+                            </div>
+                            <div class="form-group">
+                                <label>RIB du contrat = Banque de financement ?</label>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="ribConforme" value="oui">
+                                        <span>Oui</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="ribConforme" value="non" checked>
+                                        <span>Non</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep(2)">
+                                <i class="fas fa-arrow-left"></i> Précédent
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="nextStep(2)">
+                                Continuer <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Références Techniques -->
+                    <div class="form-step" id="step3">
+                        <div class="step-header">
+                            <h3><i class="fas fa-trophy"></i> Références Techniques</h3>
+                            <p>Présentez vos expériences passées sur des marchés similaires</p>
+                        </div>
+                        
+                        <div class="info-box">
+                            <i class="fas fa-info-circle"></i>
+                            <p>Ajoutez vos 3 à 5 principales références techniques (marchés similaires déjà réalisés)</p>
+                        </div>
+
+                        <div id="referencesContainer">
+                            <div class="reference-card" id="reference1">
+                                <div class="reference-header">
+                                    <span class="reference-number">Référence #1</span>
+                                    <button type="button" class="btn-icon remove-reference" onclick="removeReference(1)" style="display: none;">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>Intitulé du marché</label>
+                                        <input type="text" name="ref1_intitule" placeholder="Description du marché réalisé">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Montant HT (FCFA)</label>
+                                        <input type="number" name="ref1_montant" min="0" placeholder="Ex: 30000000">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Type de client</label>
+                                        <select name="ref1_typeClient">
+                                            <option value="">Sélectionnez...</option>
+                                            <option value="public">Public / État</option>
+                                            <option value="grand_groupe">Grand groupe / Multinationale</option>
+                                            <option value="pme">PME</option>
+                                            <option value="particulier">Particulier / TPE</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Année de réalisation</label>
+                                        <input type="number" name="ref1_annee" min="2000" max="2026" placeholder="Ex: 2024">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn btn-outline add-reference" onclick="addReference()">
+                            <i class="fas fa-plus"></i> Ajouter une référence
+                        </button>
+
+                        <div class="form-section-divider">
+                            <span>Chiffre d'affaires annuel</span>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="caAnnuel">CA annuel moyen (FCFA) <span class="required">*</span></label>
+                                <input type="number" id="caAnnuel" name="caAnnuel" required min="0" placeholder="Moyenne sur 3 ans">
+                                <small class="form-hint">Servira à calculer l'indice de capacité</small>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep(3)">
+                                <i class="fas fa-arrow-left"></i> Précédent
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="nextStep(3)">
+                                Continuer <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Structure de Financement -->
+                    <div class="form-step" id="step4">
+                        <div class="step-header">
+                            <h3><i class="fas fa-coins"></i> Structure de Financement du Marché</h3>
+                            <p>Détaillez les charges prévues pour l'exécution du marché</p>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="montantDemande">Montant du crédit demandé (FCFA) <span class="required">*</span></label>
+                                <input type="number" id="montantDemande" name="montantDemande" required min="0" placeholder="Ex: 25000000">
+                            </div>
+                        </div>
+
+                        <div class="info-box warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Les charges ci-dessous permettent de calculer votre marge bénéficiaire sur le marché</p>
+                        </div>
+
+                        <table class="charges-table">
+                            <thead>
+                                <tr>
+                                    <th>Désignation</th>
+                                    <th>Montant (FCFA)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <label for="chargesAchats">A. Achats (Fournitures / Matériaux)</label>
+                                    </td>
+                                    <td>
+                                        <input type="number" id="chargesAchats" name="chargesAchats" min="0" placeholder="0">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="chargesMainOeuvre">B. Main d'œuvre / Transports</label>
+                                    </td>
+                                    <td>
+                                        <input type="number" id="chargesMainOeuvre" name="chargesMainOeuvre" min="0" placeholder="0">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="chargesImpots">C. Impôts et taxes</label>
+                                    </td>
+                                    <td>
+                                        <input type="number" id="chargesImpots" name="chargesImpots" min="0" placeholder="0">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label for="apportEntreprise">Apport de l'entreprise</label>
+                                    </td>
+                                    <td>
+                                        <input type="number" id="apportEntreprise" name="apportEntreprise" min="0" placeholder="0">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td><strong>Total charges estimées</strong></td>
+                                    <td><strong id="totalCharges">0 FCFA</strong></td>
+                                </tr>
+                                <tr class="highlight-row">
+                                    <td><strong>Marge prévisionnelle</strong></td>
+                                    <td><strong id="margePrevisionnelle">0 FCFA</strong></td>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep(4)">
+                                <i class="fas fa-arrow-left"></i> Précédent
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="nextStep(4)">
+                                Continuer <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Situation Financière -->
+                    <div class="form-step" id="step5">
+                        <div class="step-header">
+                            <h3><i class="fas fa-chart-pie"></i> Situation Financière de l'Entreprise</h3>
+                            <p>Données issues de vos états financiers (3 dernières années)</p>
+                        </div>
+
+                        <div class="info-box">
+                            <i class="fas fa-info-circle"></i>
+                            <p>Ces informations proviennent de votre bilan et compte de résultat</p>
+                        </div>
+
+                        <!-- Année N (la plus récente) -->
+                        <div class="year-section">
+                            <h4><i class="fas fa-calendar"></i> Année N (la plus récente)</h4>
+                            <div class="form-grid three-cols">
+                                <div class="form-group">
+                                    <label for="ca_n">Chiffre d'affaires</label>
+                                    <input type="number" id="ca_n" name="ca_n" min="0" placeholder="FCFA">
+                                </div>
+                                <div class="form-group">
+                                    <label for="resultatNet_n">Résultat Net</label>
+                                    <input type="number" id="resultatNet_n" name="resultatNet_n" placeholder="FCFA">
+                                </div>
+                                <div class="form-group">
+                                    <label for="ebe_n">EBE</label>
+                                    <input type="number" id="ebe_n" name="ebe_n" placeholder="FCFA">
+                                </div>
+                                <div class="form-group">
+                                    <label for="capitauxPropres_n">Capitaux Propres</label>
+                                    <input type="number" id="capitauxPropres_n" name="capitauxPropres_n" placeholder="FCFA">
+                                </div>
+                                <div class="form-group">
+                                    <label for="totalBilan_n">Total Bilan</label>
+                                    <input type="number" id="totalBilan_n" name="totalBilan_n" min="0" placeholder="FCFA">
+                                </div>
+                                <div class="form-group">
+                                    <label for="dettesFinancieres_n">Dettes Financières</label>
+                                    <input type="number" id="dettesFinancieres_n" name="dettesFinancieres_n" min="0" placeholder="FCFA">
+                                </div>
+                                <div class="form-group">
+                                    <label for="dotationsAmort_n">Dotations Amortissements</label>
+                                    <input type="number" id="dotationsAmort_n" name="dotationsAmort_n" min="0" placeholder="FCFA">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tresorerieActif_n">Trésorerie Actif</label>
+                                    <input type="number" id="tresorerieActif_n" name="tresorerieActif_n" min="0" placeholder="FCFA">
+                                </div>
+                                <div class="form-group">
+                                    <label for="tresoreriePassif_n">Trésorerie Passif</label>
+                                    <input type="number" id="tresoreriePassif_n" name="tresoreriePassif_n" min="0" placeholder="FCFA">
+                                </div>
+                                <div class="form-group">
+                                    <label for="stocks_n">Stocks</label>
+                                    <input type="number" id="stocks_n" name="stocks_n" min="0" placeholder="FCFA">
+                                </div>
+                                <div class="form-group">
+                                    <label for="creances_n">Créances clients</label>
+                                    <input type="number" id="creances_n" name="creances_n" min="0" placeholder="FCFA">
+                                </div>
+                                <div class="form-group">
+                                    <label for="dettesFournisseurs_n">Dettes fournisseurs</label>
+                                    <input type="number" id="dettesFournisseurs_n" name="dettesFournisseurs_n" min="0" placeholder="FCFA">
+                                </div>
+                                <div class="form-group">
+                                    <label for="dettesFiscales_n">Dettes fiscales & sociales</label>
+                                    <input type="number" id="dettesFiscales_n" name="dettesFiscales_n" min="0" placeholder="FCFA">
+                                </div>
+                                <div class="form-group">
+                                    <label for="actifCirculant_n">Actif circulant</label>
+                                    <input type="number" id="actifCirculant_n" name="actifCirculant_n" min="0" placeholder="FCFA">
+                                </div>
+                                <div class="form-group">
+                                    <label for="passifCirculant_n">Passif circulant</label>
+                                    <input type="number" id="passifCirculant_n" name="passifCirculant_n" min="0" placeholder="FCFA">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Année N-1 -->
+                        <div class="year-section collapsed" id="yearN1Section">
+                            <div class="year-header" onclick="toggleYearSection('yearN1Section')">
+                                <h4><i class="fas fa-calendar"></i> Année N-1</h4>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="year-content">
+                                <div class="form-grid three-cols">
+                                    <div class="form-group">
+                                        <label for="ca_n1">Chiffre d'affaires</label>
+                                        <input type="number" id="ca_n1" name="ca_n1" min="0" placeholder="FCFA">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="resultatNet_n1">Résultat Net</label>
+                                        <input type="number" id="resultatNet_n1" name="resultatNet_n1" placeholder="FCFA">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ebe_n1">EBE</label>
+                                        <input type="number" id="ebe_n1" name="ebe_n1" placeholder="FCFA">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Année N-2 -->
+                        <div class="year-section collapsed" id="yearN2Section">
+                            <div class="year-header" onclick="toggleYearSection('yearN2Section')">
+                                <h4><i class="fas fa-calendar"></i> Année N-2</h4>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="year-content">
+                                <div class="form-grid three-cols">
+                                    <div class="form-group">
+                                        <label for="ca_n2">Chiffre d'affaires</label>
+                                        <input type="number" id="ca_n2" name="ca_n2" min="0" placeholder="FCFA">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="resultatNet_n2">Résultat Net</label>
+                                        <input type="number" id="resultatNet_n2" name="resultatNet_n2" placeholder="FCFA">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="ebe_n2">EBE</label>
+                                        <input type="number" id="ebe_n2" name="ebe_n2" placeholder="FCFA">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep(5)">
+                                <i class="fas fa-arrow-left"></i> Précédent
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="nextStep(5)">
+                                Continuer <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 6: Endettement Bancaire -->
+                    <div class="form-step" id="step6">
+                        <div class="step-header">
+                            <h3><i class="fas fa-landmark"></i> Endettement Bancaire</h3>
+                            <p>Vos engagements actuels auprès des banques et établissements de crédit</p>
+                        </div>
+                        
+                        <div class="info-box warning">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Ces informations sont normalement issues de la Centrale des Risques</p>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="creditDirect">Crédits directs en cours (FCFA)</label>
+                                <input type="number" id="creditDirect" name="creditDirect" min="0" placeholder="Crédits CT/MT utilisés">
+                            </div>
+                            <div class="form-group">
+                                <label for="engagementsSignature">Engagements par signature / Cautions (FCFA)</label>
+                                <input type="number" id="engagementsSignature" name="engagementsSignature" min="0" placeholder="Cautions sur d'autres marchés">
+                            </div>
+                            <div class="form-group">
+                                <label for="lignesAutorisees">Lignes de crédit autorisées (FCFA)</label>
+                                <input type="number" id="lignesAutorisees" name="lignesAutorisees" min="0" placeholder="Plafond autorisé">
+                            </div>
+                            <div class="form-group">
+                                <label for="impayes">Impayés (FCFA)</label>
+                                <input type="number" id="impayes" name="impayes" min="0" placeholder="0">
+                                <small class="form-hint danger">Tout impayé déclenche une alerte rouge</small>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep(6)">
+                                <i class="fas fa-arrow-left"></i> Précédent
+                            </button>
+                            <button type="button" class="btn btn-primary" onclick="nextStep(6)">
+                                Continuer <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Step 7: Garanties -->
+                    <div class="form-step" id="step7">
+                        <div class="step-header">
+                            <h3><i class="fas fa-shield-alt"></i> Garanties Proposées</h3>
+                            <p>Les sûretés que vous pouvez mobiliser pour couvrir le crédit</p>
+                        </div>
+                        
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label>Disposez-vous d'une garantie institutionnelle ?</label>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="garantieInstitutionnelle" value="oui" onchange="toggleGarantieInst(true)">
+                                        <span>Oui (Fonds de garantie, FAGACE, FSA, etc.)</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="garantieInstitutionnelle" value="non" checked onchange="toggleGarantieInst(false)">
+                                        <span>Non</span>
+                                    </label>
+                                </div>
+                                <small class="form-hint">Une garantie institutionnelle couvre généralement 50% du montant</small>
+                            </div>
+
+                            <div class="form-group full-width" id="garantieInstDetails" style="display: none;">
+                                <label for="nomGarantieInst">Nom du fonds de garantie</label>
+                                <input type="text" id="nomGarantieInst" name="nomGarantieInst" placeholder="Ex: FAGACE, FSA...">
+                            </div>
+                        </div>
+
+                        <div class="form-section-divider">
+                            <span>Garantie hypothécaire</span>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group full-width">
+                                <label>Proposez-vous une garantie hypothécaire ?</label>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="garantieHypothecaire" value="oui" onchange="toggleGarantieHypo(true)">
+                                        <span>Oui</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="garantieHypothecaire" value="non" checked onchange="toggleGarantieHypo(false)">
+                                        <span>Non</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group" id="valeurBienGroup" style="display: none;">
+                                <label for="valeurBien">Valeur d'expertise du bien (FCFA) <span class="required">*</span></label>
+                                <input type="number" id="valeurBien" name="valeurBien" min="0" placeholder="Valeur estimée par expert">
+                                <small class="form-hint">L'hypothèque doit couvrir 120% du montant demandé</small>
+                            </div>
+                        </div>
+
+                        <div class="form-section-divider">
+                            <span>Vos coordonnées</span>
+                        </div>
+
+                        <div class="info-box success">
+                            <i class="fas fa-lock"></i>
+                            <p>Vos coordonnées sont nécessaires pour recevoir votre diagnostic complet par email</p>
+                        </div>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="email">Email professionnel <span class="required">*</span></label>
+                                <input type="email" id="email" name="email" required placeholder="votre@email.com">
+                            </div>
+                            <div class="form-group">
+                                <label for="telephone">Téléphone <span class="required">*</span></label>
+                                <input type="tel" id="telephone" name="telephone" required placeholder="+229 XX XX XX XX">
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="consent" name="consent" required>
+                                <span>Je certifie sur l'honneur que toutes les informations fournies sont exactes et vérifiables. J'accepte d'être recontacté par un conseiller.</span>
+                            </label>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" onclick="prevStep(7)">
+                                <i class="fas fa-arrow-left"></i> Précédent
+                            </button>
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-chart-line"></i> Obtenir mon diagnostic
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Results Section (Hidden by default) -->
+    <section class="results-section" id="resultsSection" style="display: none;">
+        <div class="container">
+            <div class="results-wrapper">
+                <div class="results-header">
+                    <h2><i class="fas fa-chart-pie"></i> Votre Diagnostic de Bancabilité</h2>
+                </div>
+
+                <div class="score-summary" id="scoreSummary">
+                    <!-- Dynamically filled -->
+                </div>
+
+                <div class="results-details" id="resultsDetails">
+                    <!-- Dynamically filled -->
+                </div>
+
+                <div class="results-cta">
+                    <h3>Besoin d'un accompagnement personnalisé ?</h3>
+                    <p>Nos experts IOB peuvent vous aider à optimiser votre dossier</p>
+                    <a href="#contact" class="btn btn-primary btn-lg">
+                        <i class="fas fa-calendar-check"></i> Prendre rendez-vous
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <div class="section-header">
+                <h2>Besoin d'un <span class="highlight">accompagnement</span> ?</h2>
+                <p>Notre équipe d'experts est à votre disposition</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h3>Appelez-nous</h3>
+                    <p>+229 XX XX XX XX</p>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3>Écrivez-nous</h3>
+                    <p>contact@diagbancabilite.com</p>
+                </div>
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>Visitez-nous</h3>
+                    <p>Cotonou, Bénin</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <div class="logo">
+                        <i class="fas fa-chart-line"></i>
+                        <span>DiagBancabilité</span>
+                    </div>
+                    <p>Outil de diagnostic de bancabilité pour les avances sur marché.</p>
+                </div>
+                <div class="footer-links">
+                    <h4>Liens utiles</h4>
+                    <a href="#features">Fonctionnalités</a>
+                    <a href="#how-it-works">Comment ça marche</a>
+                    <a href="#diagnostic-form">Faire un diagnostic</a>
+                </div>
+                <div class="footer-legal">
+                    <h4>Légal</h4>
+                    <a href="#">Mentions légales</a>
+                    <a href="#">Politique de confidentialité</a>
+                    <a href="#">CGU</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 DiagBancabilité. Tous droits réservés.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader">
+            <div class="spinner"></div>
+            <p>Analyse en cours...</p>
+        </div>
+    </div>
+
+    <script src="js/scoring-engine.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
