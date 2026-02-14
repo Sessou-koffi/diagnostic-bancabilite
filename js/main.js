@@ -268,17 +268,78 @@ function updateChargesTotal() {
 // TOGGLES D'AFFICHAGE CONDITIONNELS
 // ============================================
 
+function toggleContratUpload(show) {
+    const uploadGroup = document.getElementById('contratUploadGroup');
+    const manuelGroup = document.getElementById('contratManuelGroup');
+    
+    if (uploadGroup) {
+        uploadGroup.style.display = show ? 'block' : 'none';
+    }
+    if (manuelGroup) {
+        manuelGroup.style.display = show ? 'none' : 'block';
+        // Gérer les champs required
+        const requiredFields = manuelGroup.querySelectorAll('[data-required="true"], [required]');
+        requiredFields.forEach(field => {
+            if (show) {
+                field.removeAttribute('required');
+                field.dataset.required = 'true';
+            } else if (field.dataset.required === 'true') {
+                field.setAttribute('required', 'required');
+            }
+        });
+    }
+}
+
+function toggleOrdreService(show) {
+    const osGroup = document.getElementById('ordreServiceGroup');
+    const dateOS = document.getElementById('dateSignatureOS');
+    const dateFin = document.getElementById('dateFinPrevue');
+    
+    if (osGroup) {
+        osGroup.style.display = show ? 'block' : 'none';
+    }
+    
+    // Rendre les champs de date obligatoires ou non
+    if (dateOS) dateOS.required = show;
+    if (dateFin) dateFin.required = show;
+}
+
 function toggleAvanceDetails(show) {
     const detailsGroup = document.getElementById('avanceDetailsGroup');
+    const tauxInput = document.getElementById('tauxAvanceDemarrage');
+    
     if (detailsGroup) {
         detailsGroup.style.display = show ? 'block' : 'none';
+    }
+    
+    // Rendre le taux obligatoire si avance demandée
+    if (tauxInput) {
+        tauxInput.required = show;
     }
 }
 
 function toggleGarantieInst(show) {
     const details = document.getElementById('garantieInstDetails');
+    const autreGroup = document.getElementById('autreGarantieInstGroup');
+    const selectGarantie = document.getElementById('nomGarantieInst');
+    
     if (details) {
         details.style.display = show ? 'block' : 'none';
+    }
+    
+    // Ajouter un listener pour afficher le champ "autre" si sélectionné
+    if (selectGarantie && !selectGarantie.hasAttribute('data-listener-added')) {
+        selectGarantie.addEventListener('change', function() {
+            if (autreGroup) {
+                autreGroup.style.display = this.value === 'autre' ? 'block' : 'none';
+            }
+        });
+        selectGarantie.setAttribute('data-listener-added', 'true');
+    }
+    
+    // Masquer le champ autre si on désactive la garantie institutionnelle
+    if (!show && autreGroup) {
+        autreGroup.style.display = 'none';
     }
 }
 
@@ -293,6 +354,99 @@ function toggleYearSection(sectionId) {
     const section = document.getElementById(sectionId);
     if (section) {
         section.classList.toggle('collapsed');
+    }
+}
+
+// Vérification de l'ancienneté de l'entreprise pour l'expérience dirigeant
+function checkEntrepriseAge() {
+    const dateCreation = document.getElementById('dateCreation')?.value;
+    const expDirigeantInput = document.getElementById('experienceDirigeant');
+    const expDirigeantRequired = document.getElementById('expDirigeantRequired');
+    const expDirigeantHint = document.getElementById('expDirigeantHint');
+    
+    if (!dateCreation || !expDirigeantInput) return;
+    
+    const dateCreationObj = new Date(dateCreation);
+    const today = new Date();
+    const ageMs = today - dateCreationObj;
+    const ageYears = ageMs / (1000 * 60 * 60 * 24 * 365);
+    
+    // Si entreprise < 1 an, rendre le champ expérience dirigeant obligatoire
+    if (ageYears < 1) {
+        expDirigeantInput.required = true;
+        if (expDirigeantRequired) expDirigeantRequired.style.display = 'inline';
+        if (expDirigeantHint) expDirigeantHint.style.display = 'block';
+    } else {
+        expDirigeantInput.required = false;
+        if (expDirigeantRequired) expDirigeantRequired.style.display = 'none';
+        if (expDirigeantHint) expDirigeantHint.style.display = 'none';
+    }
+    
+    // Mettre à jour aussi la section références et finances si nécessaire
+    updateReferencesVisibility(ageYears);
+    updateFinancesVisibility(ageYears);
+}
+
+// Mise à jour de la visibilité des références selon l'ancienneté
+function updateReferencesVisibility(ageYears) {
+    const refOptionalHint = document.getElementById('refOptionalHint');
+    const referencesContainer = document.getElementById('referencesContainer');
+    
+    // Les références ne sont pas obligatoires si entreprise < 1 an
+    if (ageYears < 1) {
+        if (refOptionalHint) refOptionalHint.style.display = 'block';
+        // Retirer le required des champs de références
+        document.querySelectorAll('#referencesContainer [required]').forEach(el => {
+            el.removeAttribute('required');
+            el.dataset.wasRequired = 'true';
+        });
+    } else {
+        if (refOptionalHint) refOptionalHint.style.display = 'none';
+        // Remettre le required si nécessaire
+        document.querySelectorAll('#referencesContainer [data-was-required]').forEach(el => {
+            el.setAttribute('required', 'required');
+        });
+    }
+}
+
+// Mise à jour de la visibilité des finances selon l'ancienneté
+function updateFinancesVisibility(ageYears) {
+    const financesNoDataGroup = document.getElementById('financesNoDataGroup');
+    const financesUploadGroup = document.getElementById('financesUploadGroup');
+    const financesAlertOld = document.getElementById('financesAlertOld');
+    const caLabelN = document.getElementById('caLabelN');
+    
+    if (ageYears < 1) {
+        // Entreprise < 1 an : pas besoin d'états financiers
+        if (financesNoDataGroup) financesNoDataGroup.style.display = 'block';
+        if (financesUploadGroup) financesUploadGroup.style.display = 'none';
+        if (financesAlertOld) financesAlertOld.style.display = 'none';
+        if (caLabelN) caLabelN.textContent = 'CA réalisé depuis la création';
+    } else if (ageYears > 2) {
+        // Entreprise > 2 ans : alerter sur les états financiers
+        if (financesNoDataGroup) financesNoDataGroup.style.display = 'none';
+        if (financesUploadGroup) financesUploadGroup.style.display = 'block';
+        if (financesAlertOld) financesAlertOld.style.display = 'block';
+        if (caLabelN) caLabelN.textContent = 'CA annuel moyen';
+    } else {
+        // Entreprise entre 1 et 2 ans
+        if (financesNoDataGroup) financesNoDataGroup.style.display = 'none';
+        if (financesUploadGroup) financesUploadGroup.style.display = 'block';
+        if (financesAlertOld) financesAlertOld.style.display = 'none';
+        if (caLabelN) caLabelN.textContent = 'Chiffre d\'affaires';
+    }
+}
+
+// Toggle upload des états financiers
+function toggleFinancesUpload(show) {
+    const uploadGroup = document.getElementById('etatsFinanciersUpload');
+    const manuelGroup = document.getElementById('financesManuelGroup');
+    
+    if (uploadGroup) {
+        uploadGroup.style.display = show ? 'block' : 'none';
+    }
+    if (manuelGroup) {
+        manuelGroup.style.display = show ? 'none' : 'block';
     }
 }
 

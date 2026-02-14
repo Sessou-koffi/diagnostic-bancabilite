@@ -256,15 +256,16 @@
                             </div>
                             <div class="form-group">
                                 <label for="dateCreation">Date de création <span class="required">*</span></label>
-                                <input type="date" id="dateCreation" name="dateCreation" required>
+                                <input type="date" id="dateCreation" name="dateCreation" required onchange="checkEntrepriseAge()">
                             </div>
                             <div class="form-group">
                                 <label for="dirigeantNom">Nom du dirigeant <span class="required">*</span></label>
                                 <input type="text" id="dirigeantNom" name="dirigeantNom" required placeholder="Prénom et Nom">
                             </div>
-                            <div class="form-group">
-                                <label for="experienceDirigeant">Années d'expérience du dirigeant</label>
+                            <div class="form-group" id="experienceDirigeantGroup">
+                                <label for="experienceDirigeant">Années d'expérience du dirigeant <span class="required" id="expDirigeantRequired" style="display: none;">*</span></label>
                                 <input type="number" id="experienceDirigeant" name="experienceDirigeant" min="0" placeholder="En années">
+                                <small class="form-hint" id="expDirigeantHint" style="display: none;">Obligatoire car l'entreprise a moins d'un an d'existence.</small>
                             </div>
                         </div>
 
@@ -281,7 +282,34 @@
                             <h3><i class="fas fa-file-contract"></i> Informations sur le Marché</h3>
                             <p>Détaillez le contrat de marché pour lequel vous demandez l'avance</p>
                         </div>
-                        
+
+                        <!-- Option de téléversement du contrat -->
+                        <div class="info-box info">
+                            <i class="fas fa-lightbulb"></i>
+                            <p>Vous pouvez téléverser votre contrat de marché (PDF) pour une extraction automatique des données, ou saisir manuellement les informations.</p>
+                        </div>
+
+                        <div class="form-group full-width">
+                            <label>Mode de saisie des informations du marché</label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="modeSaisieContrat" value="manuel" checked onchange="toggleContratUpload(false)">
+                                    <span>Saisie manuelle</span>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="modeSaisieContrat" value="upload" onchange="toggleContratUpload(true)">
+                                    <span>Téléverser le contrat (PDF)</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group full-width" id="contratUploadGroup" style="display: none;">
+                            <label for="contratPDF">Contrat de marché (PDF)</label>
+                            <input type="file" id="contratPDF" name="contratPDF" accept=".pdf" class="file-input">
+                            <small class="form-hint">Le fichier sera analysé pour extraire automatiquement les informations du marché.</small>
+                        </div>
+
+                        <div id="contratManuelGroup">
                         <div class="form-grid">
                             <div class="form-group full-width">
                                 <label for="objetMarche">Objet du marché <span class="required">*</span></label>
@@ -295,14 +323,36 @@
                                 <label for="montantTTC">Montant TTC du marché (FCFA)</label>
                                 <input type="number" id="montantTTC" name="montantTTC" min="0" placeholder="Ex: 59000000">
                             </div>
-                            <div class="form-group">
-                                <label for="dateSignatureOS">Date de signature Ordre de Service <span class="required">*</span></label>
-                                <input type="date" id="dateSignatureOS" name="dateSignatureOS" required>
+
+                            <!-- Question Ordre de Service -->
+                            <div class="form-group full-width">
+                                <label>Disposez-vous d'un ordre de service ?</label>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="hasOrdreService" value="oui" onchange="toggleOrdreService(true)">
+                                        <span>Oui</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="hasOrdreService" value="non" checked onchange="toggleOrdreService(false)">
+                                        <span>Non (pas encore reçu)</span>
+                                    </label>
+                                </div>
+                                <small class="form-hint">Si vous n'avez pas encore d'ordre de service, l'analyse du délai sera exclue du diagnostic.</small>
                             </div>
-                            <div class="form-group">
-                                <label for="dateFinPrevue">Date de fin prévue <span class="required">*</span></label>
-                                <input type="date" id="dateFinPrevue" name="dateFinPrevue" required>
+
+                            <div id="ordreServiceGroup" style="display: none;">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="dateSignatureOS">Date de signature Ordre de Service <span class="required">*</span></label>
+                                        <input type="date" id="dateSignatureOS" name="dateSignatureOS">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="dateFinPrevue">Date de fin prévue <span class="required">*</span></label>
+                                        <input type="date" id="dateFinPrevue" name="dateFinPrevue">
+                                    </div>
+                                </div>
                             </div>
+
                             <div class="form-group">
                                 <label for="typeMaitreOuvrage">Type de maître d'ouvrage <span class="required">*</span></label>
                                 <select id="typeMaitreOuvrage" name="typeMaitreOuvrage" required>
@@ -329,10 +379,11 @@
                         <div class="form-section-divider">
                             <span>Clauses contractuelles</span>
                         </div>
+                        </div> <!-- Fermeture de contratManuelGroup -->
 
                         <div class="form-grid">
-                            <div class="form-group">
-                                <label>Avance de démarrage prévue au contrat ?</label>
+                            <div class="form-group full-width">
+                                <label>Voulez-vous prendre une avance de démarrage ?</label>
                                 <div class="radio-group">
                                     <label class="radio-label">
                                         <input type="radio" name="avanceDemarrage" value="oui" onchange="toggleAvanceDetails(true)">
@@ -344,21 +395,26 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="form-group" id="avanceDetailsGroup" style="display: none;">
-                                <label for="tauxAvanceDemarrage">Taux de l'avance de démarrage (%)</label>
-                                <input type="number" id="tauxAvanceDemarrage" name="tauxAvanceDemarrage" min="0" max="100" placeholder="Ex: 30">
-                            </div>
-                            <div class="form-group">
-                                <label>Comptez-vous recevoir cette avance ?</label>
-                                <div class="radio-group">
-                                    <label class="radio-label">
-                                        <input type="radio" name="recevoirAvance" value="oui">
-                                        <span>Oui</span>
-                                    </label>
-                                    <label class="radio-label">
-                                        <input type="radio" name="recevoirAvance" value="non" checked>
-                                        <span>Non</span>
-                                    </label>
+                            <div id="avanceDetailsGroup" style="display: none;">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label for="tauxAvanceDemarrage">Taux de l'avance de démarrage (%) <span class="required">*</span></label>
+                                        <input type="number" id="tauxAvanceDemarrage" name="tauxAvanceDemarrage" min="0" max="100" placeholder="Ex: 30">
+                                        <small class="form-hint">Ce champ est obligatoire si vous souhaitez une avance de démarrage.</small>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Comptez-vous recevoir cette avance ?</label>
+                                        <div class="radio-group">
+                                            <label class="radio-label">
+                                                <input type="radio" name="recevoirAvance" value="oui">
+                                                <span>Oui</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="recevoirAvance" value="non" checked>
+                                                <span>Non</span>
+                                            </label>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div class="form-group">
@@ -380,7 +436,12 @@
                                 <small class="form-hint">Taux normal : 1/1000ème par jour</small>
                             </div>
                             <div class="form-group">
-                                <label>RIB du contrat = Banque de financement ?</label>
+                                <label for="ribContrat">RIB du contrat (IBAN) <span class="required">*</span></label>
+                                <input type="text" id="ribContrat" name="ribContrat" required placeholder="Ex: BJ00 0000 0000 0000 0000 0000">
+                                <small class="form-hint">RIB bancaire indiqué dans le contrat de marché pour les paiements.</small>
+                            </div>
+                            <div class="form-group">
+                                <label>Ce RIB correspond à la banque de financement ?</label>
                                 <div class="radio-group">
                                     <label class="radio-label">
                                         <input type="radio" name="ribConforme" value="oui">
@@ -414,6 +475,11 @@
                         <div class="info-box">
                             <i class="fas fa-info-circle"></i>
                             <p>Ajoutez vos 3 à 5 principales références techniques (marchés similaires déjà réalisés)</p>
+                        </div>
+
+                        <div class="info-box warning" id="refOptionalHint" style="display: none;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Votre entreprise ayant moins d'un an d'existence, les références techniques sont optionnelles. L'expérience du dirigeant sera prise en compte.</p>
                         </div>
 
                         <div id="referencesContainer">
@@ -563,7 +629,7 @@
                     <div class="form-step" id="step5">
                         <div class="step-header">
                             <h3><i class="fas fa-chart-pie"></i> Situation Financière de l'Entreprise</h3>
-                            <p>Données issues de vos états financiers (3 dernières années)</p>
+                            <p>Données issues de vos états financiers</p>
                         </div>
 
                         <div class="info-box">
@@ -571,12 +637,52 @@
                             <p>Ces informations proviennent de votre bilan et compte de résultat</p>
                         </div>
 
+                        <!-- Message si entreprise < 1 an -->
+                        <div class="info-box warning" id="financesNoDataGroup" style="display: none;">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <p>Votre entreprise ayant moins d'un an d'existence, vous pouvez saisir les données financières réelles depuis la création ou des projections.</p>
+                        </div>
+
+                        <!-- Alerte si entreprise > 2 ans sans états financiers -->
+                        <div class="info-box danger" id="financesAlertOld" style="display: none;">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>Attention : Votre entreprise a plus de 2 ans. Des états financiers certifiés sont généralement requis par les banques pour évaluer le dossier.</p>
+                        </div>
+
+                        <!-- Option de téléversement des états financiers -->
+                        <div id="financesUploadGroup">
+                            <div class="form-section-divider">
+                                <span>Mode de saisie</span>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label>Comment souhaitez-vous fournir vos données financières ?</label>
+                                <div class="radio-group">
+                                    <label class="radio-label">
+                                        <input type="radio" name="modeSaisieFinances" value="manuel" checked onchange="toggleFinancesUpload(false)">
+                                        <span>Saisie manuelle</span>
+                                    </label>
+                                    <label class="radio-label">
+                                        <input type="radio" name="modeSaisieFinances" value="upload" onchange="toggleFinancesUpload(true)">
+                                        <span>Téléverser mes états financiers (PDF)</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-group full-width" id="etatsFinanciersUpload" style="display: none;">
+                                <label for="etatsFinanciersPDF">États financiers (PDF)</label>
+                                <input type="file" id="etatsFinanciersPDF" name="etatsFinanciersPDF" accept=".pdf" class="file-input" multiple>
+                                <small class="form-hint">Vous pouvez téléverser plusieurs fichiers (bilans et comptes de résultat des 3 dernières années).</small>
+                            </div>
+                        </div>
+
+                        <div id="financesManuelGroup">
                         <!-- Année N (la plus récente) -->
                         <div class="year-section">
-                            <h4><i class="fas fa-calendar"></i> Année N (la plus récente)</h4>
+                            <h4><i class="fas fa-calendar"></i> <span id="caLabel">Année N (la plus récente)</span></h4>
                             <div class="form-grid three-cols">
                                 <div class="form-group">
-                                    <label for="ca_n">Chiffre d'affaires</label>
+                                    <label for="ca_n" id="caLabelN">Chiffre d'affaires / CA annuel moyen</label>
                                     <input type="number" id="ca_n" name="ca_n" min="0" placeholder="FCFA">
                                 </div>
                                 <div class="form-group">
@@ -685,6 +791,7 @@
                                 </div>
                             </div>
                         </div>
+                        </div> <!-- Fermeture de financesManuelGroup -->
 
                         <div class="form-actions">
                             <button type="button" class="btn btn-secondary" onclick="prevStep(5)">
@@ -751,7 +858,7 @@
                                 <div class="radio-group">
                                     <label class="radio-label">
                                         <input type="radio" name="garantieInstitutionnelle" value="oui" onchange="toggleGarantieInst(true)">
-                                        <span>Oui (Fonds de garantie, FAGACE, FSA, etc.)</span>
+                                        <span>Oui</span>
                                     </label>
                                     <label class="radio-label">
                                         <input type="radio" name="garantieInstitutionnelle" value="non" checked onchange="toggleGarantieInst(false)">
@@ -762,8 +869,24 @@
                             </div>
 
                             <div class="form-group full-width" id="garantieInstDetails" style="display: none;">
-                                <label for="nomGarantieInst">Nom du fonds de garantie</label>
-                                <input type="text" id="nomGarantieInst" name="nomGarantieInst" placeholder="Ex: FAGACE, FSA...">
+                                <label for="nomGarantieInst">Fonds de garantie <span class="required">*</span></label>
+                                <select id="nomGarantieInst" name="nomGarantieInst">
+                                    <option value="">Sélectionnez un fonds de garantie...</option>
+                                    <option value="FAGACE">FAGACE - Fonds Africain de Garantie et de Coopération Économique</option>
+                                    <option value="FSA">FSA - Fonds de Solidarité Africain</option>
+                                    <option value="FNM">FNM - Fonds National de la Microfinance</option>
+                                    <option value="FONAGA">FONAGA - Fonds National de Garantie et d'Assistance</option>
+                                    <option value="FNGA">FNGA - Fonds National de Garantie Agricole</option>
+                                    <option value="AFD_ARIZ">AFD/ARIZ - Assurance Risque Intermédiaires de Zone</option>
+                                    <option value="GARI">GARI - Fonds de Garantie des Investissements Privés</option>
+                                    <option value="autre">Autre fonds de garantie</option>
+                                </select>
+                                <small class="form-hint">Sélectionnez le fonds de garantie qui couvrira votre crédit.</small>
+                            </div>
+
+                            <div class="form-group full-width" id="autreGarantieInstGroup" style="display: none;">
+                                <label for="autreGarantieInst">Précisez le nom du fonds de garantie</label>
+                                <input type="text" id="autreGarantieInst" name="autreGarantieInst" placeholder="Nom du fonds de garantie">
                             </div>
                         </div>
 
